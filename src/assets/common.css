@@ -1,0 +1,61 @@
+:root {
+    --font: normal 400 14px/1.5 -apple-system, BlinkMacSystemFont, Oxygen, Ubuntu,
+    Cantarell, Consolas, "Open Sans", "Helvetica Neue", sans-serif;
+    --radius: 12px;
+    --width: 810px;
+}
+html {
+    font: var(--font);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    background: rgb(232, 232, 232);
+    color: #212121;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius);
+}
+::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .24s;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: #4a4a4a;
+    user-select: none;
+    white-space: nowrap;
+}
+.btn:hover {
+    color: #212121;
+}
+.round {
+    border-radius: var(--radius);
+}
+.backdrop {
+    background: #000;
+}
+.bg-blur {
+    background: rgba(232,232,232,.4);
+    backdrop-filter: blur(24px);
+}
+.panel {
+    padding: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: all .24s;
+}
+.active {
+    pointer-events: unset;
+    opacity: 1;
+}
+.flex {
+    display: flex;
+    align-items: center;
+}
