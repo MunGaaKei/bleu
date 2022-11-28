@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import styled from "styled-components";
-import { netcloudQrCode, netcloudCheckQrCode, netcloudLoginStatus } from "../api";
+import { netcloudQrCode, netcloudCheckQrCode, netcloudLoginStatus, netcloudLogout } from "../api";
 import { useEffect, useRef, useState } from "react";
 import { Toast } from "../components/toast";
 import { signin, signout } from "../store/user";
@@ -33,28 +33,34 @@ const UserNetcloud : React.FC = () : JSX.Element => {
     const [qrImg, setQrImg] = useState<string>('');
     const qrTimer = useRef<ReturnType<typeof setInterval>>();
     const key = useRef<string>('');
+    const [tip, setTip] = useState<string>('检测登录中...');
 
     useEffect(() => {
         if ( netcloud ) return;
         checkStatus();
-
-        const queryNetcloudQrCode = async () => {
-            const res = await netcloudQrCode();
-            if ( res ) {
-                setQrImg(res.qrimg);
-                key.current = res.key;
-                if ( !qrTimer.current ) {
-                    qrTimer.current = setInterval(checkNcQr, 3000);
-                }
-            }
-        }
-
         !netcloud && queryNetcloudQrCode();
 
         return () => {
             qrTimer.current && clearInterval(qrTimer.current);
         }
     }, [netcloud]);
+
+    const queryNetcloudQrCode = async () => {
+        const res = await netcloudQrCode();
+        if ( res ) {
+            setQrImg(res.qrimg);
+            key.current = res.key;
+            if ( !qrTimer.current ) {
+                qrTimer.current = setInterval(checkNcQr, 3000);
+            }
+        } else {
+            Toast.push({
+                key: 'login',
+                text: `🥲 网络似乎出现了问题`
+            });
+            setTip('请重新刷新页面');
+        }
+    }
 
     const checkStatus = async () => {
         const status = await netcloudLoginStatus();
@@ -64,13 +70,23 @@ const UserNetcloud : React.FC = () : JSX.Element => {
                 data: status
             }));
         } else {
+            !netcloud && queryNetcloudQrCode();
             Toast.push({
                 key: 'login',
                 text: `🥲 网易云登录信息过期，请重新登录`
             });
-            dispatch(signout(platform.netcloud));
-            localStorage.setItem('cookie-netcloud', '');
+            logout();
         }
+    }
+
+    const logout = async () => {
+        dispatch(signout(platform.netcloud));
+        localStorage.setItem('cookie-netcloud', '');
+        const res = await netcloudLogout();
+        res.status === 200 && Toast.push({
+            key: 'logout',
+            text: '网易云账号已不在登录状态'
+        });
     }
 
     const checkNcQr = async () => {
@@ -92,6 +108,8 @@ const UserNetcloud : React.FC = () : JSX.Element => {
                         data: status
                     }));
                 }
+            } else if ( code === 802 ) {
+                setTip('扫码成功，等待确认...');
             }
         }
     }
@@ -103,14 +121,14 @@ const UserNetcloud : React.FC = () : JSX.Element => {
                 <Userinfo>
                     <h4 className="flex">{ netcloud.name } { netcloud.vip && <Iconvip className="iconfont icon-vip"></Iconvip> }</h4>
                 </Userinfo>
-                <a className="btn iconfont icon-sign_out" style={{ fontSize: '32px', lineHeight: '20px', marginLeft: 'auto' }}></a>
+                <a className="btn iconfont icon-sign_out" style={{ fontSize: '32px', lineHeight: '20px', marginLeft: 'auto' }} onClick={ logout }></a>
             </div>
         } else {
             return <>
             {
                 qrImg?
                 <img src={ qrImg } className="qr-image"></img>:
-                <p>检测登录中...</p>
+                <p>{ tip }</p>
             }
             </>
         }

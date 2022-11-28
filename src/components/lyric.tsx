@@ -38,11 +38,15 @@ interface L {
 const Lyric : React.FC = () : JSX.Element => {
 
     const { time, current } = useAppSelector(state => state.playlist);
-    if (!current) return <></>;
     const [lyric, setLyric] = useState<L[]>([]);
     const container = useRef<HTMLDivElement>(null);
+    const cursor = lyric.findIndex((lyr: L) => {
+        return lyr.time > time;
+    }) - 1 || -1;
+
 
     useEffect(() => {
+        if (!current) return;
         const { id } = current;
         if ( !id ) return;
         const query = async () => {
@@ -65,9 +69,6 @@ const Lyric : React.FC = () : JSX.Element => {
         
     }, [current]);
 
-    const cursor = lyric.findIndex((lyr: L) => {
-        return lyr.time > time;
-    }) - 1 || -1;
 
     useEffect(() => {
         const $c = container.current;
@@ -80,6 +81,8 @@ const Lyric : React.FC = () : JSX.Element => {
         }
         
     }, [cursor]);
+
+    if (!current) return <></>;
     
 
     function lyricStatus (i: number): string {

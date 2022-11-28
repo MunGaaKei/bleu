@@ -36,6 +36,10 @@ const netcloudLoginStatus = async () => {
     return await netcloud.loginStatus();
 }
 
+const netcloudLogout = async () => {
+    return await netcloud.logout();
+}
+
 export {
     search,
     querySong,
@@ -44,5 +48,6 @@ export {
     queryMv,
     netcloudQrCode,
     netcloudCheckQrCode,
-    netcloudLoginStatus
+    netcloudLoginStatus,
+    netcloudLogout
 }

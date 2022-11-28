@@ -10,15 +10,22 @@ interface Playlist {
     volume: number
 }
 
+const getLocalList = (): TypeSong[] => {
+    let localCacheList = localStorage.getItem('playlist');
+    if ( localCacheList ) {
+        return JSON.parse(localCacheList) as TypeSong[];
+    } else {
+        return [];
+    }
+}
 
 const initialState: Playlist = {
-    list: [],
+    list: getLocalList(),
     mode: 0,
     current: null,
     time: 0,
     volume: .5
 }
-
 
 const reducers = {
 
@@ -32,6 +39,7 @@ const reducers = {
             return;
         } else {
             state.list.push(payload);
+            localStorage.setItem('playlist', JSON.stringify(state.list));
         }
     },
 
@@ -39,6 +47,7 @@ const reducers = {
         let { id, src } = payload;
         let i = state.list.findIndex(song => song.id === id);
         state.list[i].src = src;
+        localStorage.setItem('playlist', JSON.stringify(state.list));
     },
 
     changeMode: (state: Playlist) => {
@@ -54,6 +63,7 @@ const reducers = {
                 state.current = state.list[(state.list.length === k + 1)? k - 1: k + 1];
             }
             state.list.splice(index, 1);
+            localStorage.setItem('playlist', JSON.stringify(state.list));
         }
     },
 

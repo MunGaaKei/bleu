@@ -4,6 +4,7 @@ import { TypeSong } from '../store/types';
 import Row from '../components/row';
 import Text from '../components/text';
 import Lyric from '../components/lyric';
+import { useEffect } from 'react';
 
 const Container = styled.div`
 height: 100%;
@@ -16,7 +17,7 @@ overflow-x: hidden;
 
 const Playlist : React.FC = () : JSX.Element => {
 
-    const { list } = useAppSelector(state => state.playlist, (p, n) => p.list.length === n.list.length);
+    const { list } = useAppSelector(state => state.playlist, (p, n) => p.list === n.list);
 
     if ( !list.length ) {
         return <Text text='空的播放列表'></Text>

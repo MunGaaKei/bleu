@@ -5,7 +5,6 @@ import { TypeSong } from '../store/types';
 import { search } from '../api';
 import Pagination from '../components/pagination';
 import Text from '../components/text';
-
 import { Toast } from '../components/toast';
 
 const H = styled.div`
@@ -90,7 +89,10 @@ const Search : React.FC = () : JSX.Element => {
             });
             
             if ( res.msg ) {
-                // NETWORK ERROR
+                Toast.push({
+                    key: 'search',
+                    text: res.msg
+                })
             } else {
                 setList(res.songs);
                 setCount(res.count);

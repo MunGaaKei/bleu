@@ -59,7 +59,10 @@ export const audio: HTMLAudioElement = new Audio();
 
 const Player : React.FC = () : JSX.Element => {
 
-    const { current, mode, list, volume } = useAppSelector(state => state.playlist);
+    const { current, mode, list, volume } = useAppSelector(state => state.playlist, (p, n) => {
+        return p.list.length === n.list.length && p.mode === n.mode && p.current === n.current && p.volume === n.volume;
+    });
+    const { netcloud } = useAppSelector(state => state.user, (p, n) => p.netcloud === n.netcloud);
     const dispatch = useAppDispatch();
     const [currentTime, setCurrentTime] = useState<number>(0);
     const [playing, setPlaying] = useState<boolean>(false);
@@ -103,6 +106,17 @@ const Player : React.FC = () : JSX.Element => {
                     audio.setAttribute('src', src);
                     dispatch(updateSongData({ id: current.id, src }));
                     audio.play();
+                    if ( current.vip && !netcloud?.vip ) {
+                        Toast.push({
+                            key: 'song',
+                            text: '😳 歌曲只能试听30s 或者可以登录平台VIP账户'
+                        })
+                    }
+                } else {
+                    Toast.push({
+                        key: 'song',
+                        text: '🤨 网络似乎出了点状况'
+                    })
                 }
             }
             query();

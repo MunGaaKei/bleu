@@ -49,7 +49,7 @@ const Comment : React.FC = () : JSX.Element => {
     }
 
     useEffect(() => {
-        if ( paging && page === 1 ) return;
+        if ( paging || page === 1 ) return;
         if ( title.current && box.current ) {
             const pa = box.current.parentNode as HTMLElement;
             

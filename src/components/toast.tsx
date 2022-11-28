@@ -7,9 +7,12 @@ z-index: 1000;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
+display: flex;
+flex-direction: column;
 `;
 
 const Item = styled.div`
+display: flex;
 margin: 4px auto;
 padding: 8px 20px;
 border-radius: 4px;

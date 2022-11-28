@@ -32,7 +32,7 @@ user-select: none;
     opacity: .4;
 }
 &.active {
-    background: floralwhite;
+    background: silver;
 }
 &.no-copyright {
     opacity: .4;

@@ -1,7 +1,7 @@
 import { netcloud } from "./service";
 import { SearchQuery, SearchResult, CommentItem } from "./interface";
 
-const NETWORK_ERROR = 'SOMETHING\'S WRONG WITH NETWORK ...';
+const NETWORK_ERROR = '🥲 网络似乎出现了问题';
 
 const search = async ({keyword, page = 1, type = 1}: SearchQuery): Promise<SearchResult> => {
     const SIZE = 30;
@@ -149,7 +149,7 @@ const loginStatus = async () => {
     const res = await netcloud.get(`/login/status?t=${ new Date().getTime() }`);
     if ( res.status === 200 ) {
         const { account, profile } = res.data.data;
-        return {
+        return profile ? {
             id: account.id,
             name: profile.nickname,
             bio: profile.signature,
@@ -157,10 +157,14 @@ const loginStatus = async () => {
             avatar: profile.avatarUrl,
             background: profile.backgroundUrl,
             gender: profile.gender
-        }
+        }: null;
     } else {
         return null;
     }
+}
+
+const logout = async () => {
+    return await netcloud.get('/logout');
 }
 
 export default {
@@ -171,5 +175,6 @@ export default {
     queryMv,
     qrCode,
     checkQrCode,
-    loginStatus
+    loginStatus,
+    logout
 }
