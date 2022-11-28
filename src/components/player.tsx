@@ -93,7 +93,12 @@ const Player : React.FC = () : JSX.Element => {
 
     useEffect(() => {
         !audio.paused && audio.pause();
-        if ( !current ) return;
+        if ( !current ) {
+            audio.removeAttribute('src');
+            audio.currentTime = 0;
+            audio.pause();
+            return;
+        }
         
         if ( current.src ) {
             audio.setAttribute('src', current.src);

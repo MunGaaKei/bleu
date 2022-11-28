@@ -65,6 +65,9 @@ const reducers = {
             state.list.splice(index, 1);
             localStorage.setItem('playlist', JSON.stringify(state.list));
         }
+        if ( state.list.length === 0 ) {
+            state.current = null;
+        }
     },
 
     setPlaytime: (state: Playlist, { payload }: PayloadAction<number>) => {

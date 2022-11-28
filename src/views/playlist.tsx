@@ -4,7 +4,6 @@ import { TypeSong } from '../store/types';
 import Row from '../components/row';
 import Text from '../components/text';
 import Lyric from '../components/lyric';
-import { useEffect } from 'react';
 
 const Container = styled.div`
 height: 100%;
